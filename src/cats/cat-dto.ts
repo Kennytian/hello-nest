@@ -4,3 +4,8 @@ export class CreateCatDto {
   readonly age: number;
   readonly breed: string;
 }
+
+export class FindAllCatsDto {
+  readonly skip: number;
+  readonly limit: number;
+}

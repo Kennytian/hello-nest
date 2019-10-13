@@ -21,17 +21,17 @@ describe('CatsController', () => {
 
   describe('cats', () => {
     it('返回数据列表', async () => {
-      const result = await catsController.findAll();
+      const result = await catsController.findAll({});
       expect(result.length).toBeGreaterThanOrEqual(0);
     });
 
     it('创建对象数据', async () => {
       const result = await catsController.create({
-        name: 'Jom',
+        name: 'Jom_test',
         age: 5.5,
-        breed: 'unknown',
+        breed: 'unknown_test',
       });
-      expect(result).toMatchObject({ name: 'Jom', age: 5.5, breed: 'unknown' });
+      expect(result).toMatchObject({ name: 'Jom_test', age: 5.5, breed: 'unknown_test' });
     });
   });
 });
