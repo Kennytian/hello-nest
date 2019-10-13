@@ -17,7 +17,7 @@ export class CatsController {
     return this.catsService.create(createCatDto);
   }
 
-  @Get(['find-all'])
+  @Get('find-all')
   findAll(@Query() query): Promise<CatDoc[]> {
     const { index = 0, size = 5 } = query;
     const limit = Number.parseInt(size, 10) || 5;
