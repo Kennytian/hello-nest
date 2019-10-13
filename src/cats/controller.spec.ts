@@ -1,32 +1,37 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CatsController } from './controller';
 import { CatsService } from './service';
+import { CatsProviders } from './providers';
+import { DatabaseModule } from '../database/module';
+// import { CatsModule } from './module';
 
 describe('CatsController', () => {
   let catsController: CatsController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
+      imports: [DatabaseModule],
       controllers: [CatsController],
-      providers: [CatsService],
+      providers: [CatsService, ...CatsProviders],
+      // imports: [CatsModule],
     }).compile();
 
     catsController = app.get<CatsController>(CatsController);
   });
 
   describe('cats', () => {
-    it('should return "This action result all cats"', () => {
-      expect(catsController.findAll()).toBe('This action result all cats');
+    it('返回数据列表', async () => {
+      const result = await catsController.findAll({});
+      expect(result.length).toBeGreaterThanOrEqual(0);
     });
 
-    it('should return "This action adds a new cat"', () => {
-      expect(catsController.create()).toBe('This action adds a new cat');
-    });
-
-    it('should return "This action result a wildcard"', () => {
-      expect(catsController.findWildcard()).toBe(
-        'This action result a wildcard',
-      );
+    it('创建对象数据', async () => {
+      const result = await catsController.create({
+        name: 'Jom_test',
+        age: 5.5,
+        breed: 'unknown_test',
+      });
+      expect(result).toMatchObject({ name: 'Jom_test', age: 5.5, breed: 'unknown_test' });
     });
   });
 });
