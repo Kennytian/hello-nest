@@ -8,8 +8,8 @@ async function bootstrap() {
     logger: new BizLogger(),
   });
   const options = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('大猫 API 文档系统')
+    .setDescription('欢迎使用大猫 API 文档系统，三端的接口都在这儿！')
     .setVersion('1.0.0')
     .addTag('cats')
     .build();

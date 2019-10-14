@@ -18,6 +18,18 @@ export class CatsService {
     return result;
   }
 
+  async findOne(id): Promise<CatDoc> {
+    return await this.catModel.find({ _id: id }).exec();
+  }
+
+  async deleteOne(id): Promise<CatDoc> {
+    return await this.catModel.find({ _id: id }).deleteOne();
+  }
+
+  async updateOne(id, body): Promise<CatDoc> {
+    return await this.catModel.find({ _id: id }).updateOne(body);
+  }
+
   async findAll(param: FindAllCatsDto): Promise<CatDoc[]> {
     // console.log(param);
     return await this.catModel
