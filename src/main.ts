@@ -1,18 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { BizLogger } from './utils/biz-logger';
-import { setupSwagger } from './shared/swagger';
+import { setupSwagger } from "./shared/swagger";
+import { MyLogger } from './utils/my-logger';
 
 async function bootstrap() {
+  const host = '127.0.0.1';
+  const port = 3004;
+
   const app = await NestFactory.create(AppModule, {
-    logger: new BizLogger(),
+    // logger: ['warn','error'],
+    logger: new MyLogger(),
   });
 
-  await app.listen(3004, '0.0.0.0');
-  if (process.env.NODE_ENV !== 'production') {
-    setupSwagger(app);
+  if (process.env.NODE_ENV !== "production") {
+    setupSwagger(app, `${host}:${port}`);
   }
 
-  console.log(`Application is running on: ${await app.getUrl()}/api-docs`);
+  await app.listen(port, host);
+
+  console.log('process.env.NODE_ENV======', process.env.NODE_ENV);
+
+  console.log(`Application is running on: http://${host}:${port}/cats`);
 }
 bootstrap();

@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CatsController } from './controller';
 import { CatsService } from './service';
 import { CatsModule } from './module';
-// import { CatsModule } from './module';
 
 describe('CatsController', () => {
   let controller: CatsController;
