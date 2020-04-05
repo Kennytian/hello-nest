@@ -1,20 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { BizLogger } from './utils/biz-logger';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { setupSwagger } from "./shared/swagger";
+import { MyLogger } from './utils/my-logger';
 
 async function bootstrap() {
+  const host = '127.0.0.1';
+  const port = 3004;
+
   const app = await NestFactory.create(AppModule, {
-    logger: new BizLogger(),
+    // logger: ['warn','error'],
+    logger: new MyLogger(),
   });
-  const options = new DocumentBuilder()
-    .setTitle('大猫 API 文档系统')
-    .setDescription('欢迎使用大猫 API 文档系统，三端的接口都在这儿！')
-    .setVersion('1.0.0')
-    .addTag('cats')
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api-docs', app, document);
-  await app.listen(3000);
+
+  if (process.env.NODE_ENV !== "production") {
+    setupSwagger(app, `${host}:${port}`);
+  }
+
+  await app.listen(port, host);
+
+  console.log('process.env.NODE_ENV======', process.env.NODE_ENV);
+
+  console.log(`Application is running on: http://${host}:${port}/cats`);
 }
 bootstrap();

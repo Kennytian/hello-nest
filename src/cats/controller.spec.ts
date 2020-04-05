@@ -1,37 +1,36 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CatsController } from './controller';
 import { CatsService } from './service';
-import { CatsProviders } from './providers';
-import { DatabaseModule } from '../database/module';
-// import { CatsModule } from './module';
+import { CatsModule } from './module';
 
 describe('CatsController', () => {
-  let catsController: CatsController;
+  let controller: CatsController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule],
-      controllers: [CatsController],
-      providers: [CatsService, ...CatsProviders],
-      // imports: [CatsModule],
+      imports: [CatsModule],
     }).compile();
 
-    catsController = app.get<CatsController>(CatsController);
+    controller = app.get(CatsController);
   });
 
   describe('cats', () => {
-    it('返回数据列表', async () => {
-      const result = await catsController.findAll({});
-      expect(result.length).toBeGreaterThanOrEqual(0);
+    it('Hello', async () => {
+      const result = await controller.hello();
+      expect(result).toEqual('Hello cats!');
     });
 
-    it('创建对象数据', async () => {
-      const result = await catsController.create({
-        name: 'Jom_test',
-        age: 5.5,
-        breed: 'unknown_test',
-      });
-      expect(result).toMatchObject({ name: 'Jom_test', age: 5.5, breed: 'unknown_test' });
-    });
+    // it('返回数据列表', async () => {
+    //   const result = await controller.findAll({});
+    //   expect(result.length).toBeGreaterThanOrEqual(0);
+    // });
+    // it('创建对象数据', async () => {
+    //   const result = await controller.create({
+    //     name: 'Jom_test',
+    //     age: 5.5,
+    //     breed: 'unknown_test',
+    //   });
+    //   expect(result).toMatchObject({ name: 'Jom_test', age: 5.5, breed: 'unknown_test' });
+    // });
   });
 });

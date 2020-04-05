@@ -1,41 +1,83 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { CreateCatDto, FindAllCatsDto } from './cat-dto';
-import { CatDoc } from './interface';
+import { Injectable } from '@nestjs/common';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { MongoEntityManager } from 'typeorm';
+import { BaseResp } from '../base/base.resp';
+import { convertId2Instance, convertIdInObject } from '../utils/input-covert';
+import { CatEntity, CatUpdateInput } from './cat.entity';
 
 @Injectable()
 export class CatsService {
-  // CAT_MODEL 表示 token，用于跟 providers 文件里的 provide 名称匹配
-  constructor(@Inject('CAT_MODEL') private readonly catModel: Model<CatDoc>) {}
+  constructor(@InjectEntityManager() private readonly manager: MongoEntityManager) {}
+  private readonly objectIdKeys = 'farm,user';
 
   hello(): string {
     return 'Hello cats!';
   }
 
-  async create(createCatDto: CreateCatDto): Promise<CatDoc> {
-    const createdCat = new this.catModel(createCatDto);
-    const result = await createdCat.save();
-    return result;
+  async create(input: CatEntity): Promise<BaseResp> {
+    try {
+      const data = await this.manager.save(CatEntity, input);
+      console.log('create data===', data);
+      return { message: '', code: 0, data: !!data };
+    } catch (e) {
+      console.error('CatsService-create-error:', e);
+      return { message: e.message, code: 500, data: false };
+    }
   }
 
-  async findOne(id): Promise<CatDoc> {
-    return await this.catModel.find({ _id: id }).exec();
+  async findOne(id: string): Promise<BaseResp> {
+    if (!id) {
+      return { message: 'id 不能为空', code: 500, data: false };
+    }
+    try {
+      const data = await this.manager.findOne(CatEntity, {
+        where: convertId2Instance(id),
+        cache: true,
+        order: { id: 'DESC' },
+      });
+      return { message: '', code: 0, data };
+    } catch (e) {
+      console.error('CatsService-findOne-error:', e);
+      return { message: e.message, code: 500, data: false };
+    }
   }
 
-  async deleteOne(id): Promise<CatDoc> {
-    return await this.catModel.find({ _id: id }).deleteOne();
+  async deleteOne(id): Promise<BaseResp> {
+    if (!id) {
+      return { message: 'id 不能为空', code: 500, data: false };
+    }
+    try {
+      const data = await this.manager.deleteOne(CatEntity, convertId2Instance(id));
+      return { message: '', code: 0, data: !!data?.deletedCount };
+    } catch (e) {
+      console.error('CatsService-deleteOne-error:', e);
+      return { message: e.message, code: 500, data: false };
+    }
   }
 
-  async updateOne(id, body): Promise<CatDoc> {
-    return await this.catModel.find({ _id: id }).updateOne(body);
+  async updateOne(input: CatUpdateInput): Promise<BaseResp> {
+    try {
+      const { id, ...rest } = input;
+      if (!id) {
+        return { message: 'id 不能为空', code: 500, data: false };
+      }
+      const data = await this.manager.updateOne(CatEntity, convertId2Instance(id), {
+        $set: { ...convertIdInObject(rest, this.objectIdKeys), updateAt: new Date() },
+      });
+      return { message: '', code: 0, data: !!data?.result?.n };
+    } catch (e) {
+      console.error('CatsService-updateOne-error:', e);
+      return { message: e.message, code: 500, data: false };
+    }
   }
 
-  async findAll(param: FindAllCatsDto): Promise<CatDoc[]> {
-    // console.log(param);
-    return await this.catModel
-      .find({})
-      .limit(param.limit)
-      .skip(param.skip)
-      .exec();
+  async findAll(): Promise<BaseResp> {
+    try {
+      const data = await this.manager.find(CatEntity);
+      return { message: '', code: 0, data };
+    } catch (e) {
+      console.error('CatsService-findAll-error:', e);
+      return { message: e.message, code: 500, data: null };
+    }
   }
 }
