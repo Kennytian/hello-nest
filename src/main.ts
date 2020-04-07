@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { setupSwagger } from "./shared/swagger";
+import { setupSwagger } from './shared/swagger';
 import { MyLogger } from './utils/my-logger';
 
 async function bootstrap() {
@@ -12,7 +12,7 @@ async function bootstrap() {
     logger: new MyLogger(),
   });
 
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== 'production') {
     setupSwagger(app, `${host}:${port}`);
   }
 
