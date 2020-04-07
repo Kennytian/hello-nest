@@ -46,11 +46,9 @@ export class GitHubOAuthAppController {
   @Get('oauth/oauth-callback')
   @ApiOperation({ summary: 'OAuth 回调，无需手动调用' })
   async callback(@Query() { code }, @Response() res) {
-    console.log('callback data========', res.data);
     const body = { client_id: this.clientId, client_secret: this.clientSecret, code };
     const config = { headers: { accept: 'application/json' } };
     const { data } = await this.httpService.post(this.tokenUrl, body, config).toPromise();
-    console.log('callback data========', data);
     if (data) {
       const { access_token, error_description } = data;
       if (access_token) {
