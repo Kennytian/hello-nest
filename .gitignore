@@ -35,3 +35,6 @@ lerna-debug.log*
 
 # Jest
 /src/coverage
+
+# Biz
+token.txt
