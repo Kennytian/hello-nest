@@ -5,7 +5,7 @@ import { CatEntity, CatUpdateInput } from './cat.entity';
 import { CatsService } from './service';
 
 @Controller('')
-@ApiTags('猫儿总类')
+@ApiTags('猫儿 接口')
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
@@ -15,10 +15,10 @@ export class CatsController {
     return this.catsService.hello();
   }
 
-  @Post('cat/create')
+  @Post('cat/save')
   @ApiOperation({ summary: '创建一条猫儿的记录', description: '猫儿的记录的描述' })
-  async create(@Body() input: CatEntity): Promise<BaseResp> {
-    return this.catsService.create(input);
+  async save(@Body() input: CatEntity): Promise<BaseResp> {
+    return this.catsService.save(input);
   }
 
   @Get('cat')
