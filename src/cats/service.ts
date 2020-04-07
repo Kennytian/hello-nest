@@ -14,7 +14,7 @@ export class CatsService {
     return 'Hello cats!';
   }
 
-  async create(input: CatEntity): Promise<BaseResp> {
+  async save(input: CatEntity): Promise<BaseResp> {
     try {
       const data = await this.manager.save(CatEntity, input);
       console.log('create data===', data);
