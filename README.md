@@ -1,5 +1,7 @@
 # Hello Nest
 
+![CI](https://github.com/Kennytian/hello-nest/workflows/CI/badge.svg?branch=master)
+
 #### JWT
 
 `@nestjs/jwt` + `@nestjs/jwt` + `JwtGuard` + `UseGuards`
